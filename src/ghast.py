@@ -50,10 +50,10 @@ class Ghast():
         # use pathfinder to move toward Pucman
         def HUNT():
             moveMap = [
-            board.canMove(LEFT()) and LEFT() not in self.history._,
-            board.canMove(RIGHT()) and RIGHT() not in self.history._,
-            board.canMove(UP()) and UP() not in self.history._,
-            board.canMove(DOWN()) and DOWN() not in self.history._
+                board.canMove(LEFT()) and LEFT() not in self.history._,
+                board.canMove(RIGHT()) and RIGHT() not in self.history._,
+                board.canMove(UP()) and UP() not in self.history._,
+                board.canMove(DOWN()) and DOWN() not in self.history._
             ]
 
             horizontalPriority = abs(self.pos[0] - pos[0]) > abs(self.pos[1] - pos[1])

@@ -17,5 +17,19 @@ COLOR = {
 BOARD_ELEMENT_MAP = {
     'NONE': 0,
     'FOOD': 1,
-    'WALL': 2
+    'WALL': 2,
+    'SUPERFOOD': 3
 }
+
+TICK_RATE = {
+    'DEV': 1,
+    'PLAYING': 5,
+    'TRAINING': 50
+}
+
+SCORE_VALUES = {
+    'FOOD': 10,
+    'SUPERFOOD': 50
+}
+
+POWER_UP_LENGTH = 10 # seconds

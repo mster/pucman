@@ -37,7 +37,7 @@ def main ():
     # while playing
     while session:
         # manage game time, 5 ticks per second
-        clock.tick(5)
+        clock.tick(TICK_RATE['PLAYING'])
         pygame.time.delay(50)
 
         # update player state

@@ -1,7 +1,8 @@
 # import board elements
 from src.board.wall import Wall
 from src.board.food import Food
-from src.config import BOARD_ELEMENT_MAP
+from src.board.superFood import SuperFood
+from src.config import *
 
 # import core modules and community packages
 import random
@@ -48,6 +49,12 @@ class Board():
                 elif (curr == BOARD_ELEMENT_MAP['WALL']):
                     coords = int(x * self.tileSize[0]), int(y * self.tileSize[1])
                     Wall(coords).draw(self._)
+
+                # add super food
+                elif (curr == BOARD_ELEMENT_MAP['SUPERFOOD']):
+                    coords = int(x * self.tileSize[0] + self.tileSize[0] / 2), int(y * self.tileSize[1] + self.tileSize[1] / 2)
+                    SuperFood(coords).draw(self._)
+
     
 
     def mapify(self):
@@ -98,6 +105,8 @@ class Board():
         self.tileMap[16][8] = 2
         self.tileMap[17][8] = 2
 
+        self.tileMap[5][5] = 3
+
     def canMove(self, pos):
         x, y = self.getTile(pos)
 
@@ -108,13 +117,17 @@ class Board():
         x, y = self.getTile(pos)
 
         # check if pucman actually ate the food
-        addScore = False
-        if (self.tileMap[x][y] == 1): addScore = True
+        score = 0
+        curr = self.tileMap[x][y]
+        if (curr == BOARD_ELEMENT_MAP['FOOD']): 
+            score = 10
+        if (curr == BOARD_ELEMENT_MAP['SUPERFOOD']):
+            score = 50
 
         # this removes the food from the board
         self.tileMap[x][y] = 0
 
-        return addScore
+        return score
 
 
     def getTile(self, pos):
