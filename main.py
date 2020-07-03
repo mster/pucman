@@ -12,14 +12,15 @@ from src.pucman import Pucman
 from src.ghast import Ghast
 from src.board.board import Board
 
+MODE = 'PLAYING'
 
 def main ():
     # initialize all imported pygame modules
     pygame.init()
 
     # initialize game elements
-    board = Board(size=BOARD_SIZE)
-    pucman = Pucman(start=START['PUCMAN'], color=COLOR['PUCMAN'])
+    board = Board(size=BOARD_SIZE, color=COLOR['BACKGROUND'])
+    pucman = Pucman(start=START['PUCMAN'], color=COLOR['PUCMAN'], MODE=MODE)
     ghasts = {
         "blinky": Ghast(start=START['GHAST'], color=COLOR['BLINKY'], name="Blinky"),
         "pinky": Ghast(start=START['GHAST'], color=COLOR['PINKY'], name="Pinky"),
@@ -37,8 +38,8 @@ def main ():
     # while playing
     while session:
         # manage game time, 5 ticks per second
-        clock.tick(TICK_RATE['PLAYING'])
-        pygame.time.delay(50)
+        clock.tick(TICK_RATE[MODE])
+        # pygame.time.delay(50)
 
         # update player state
         pucman.move(board)

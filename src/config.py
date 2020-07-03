@@ -6,7 +6,8 @@ START = {
 }
 
 COLOR = {
-    'PUCMAN': (255,255,0),
+    'BACKGROUND': (0, 0, 0),
+    'PUCMAN': (255, 255, 0),
     'BLINKY': (255, 0, 0),
     'PINKY': (255, 184, 255),
     'INKY': (0, 255, 255),

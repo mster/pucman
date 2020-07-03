@@ -7,7 +7,7 @@ class Pucman():
     def __init__(self, start, color=(255,255,0), MODE="PLAYING"):
         # bind params
         self.pos = start
-        self.MODE = MODE
+        self.mode = MODE
 
         # props
         self.dimensions = 20,20
@@ -19,54 +19,55 @@ class Pucman():
 
 
     def draw(self, surface):
-        x = self.pos[0] + self.dimensions[0]//2
-        y = self.pos[1] + self.dimensions[1]//2
+        x = self.pos[0]
+        y = self.pos[1]
+
+        c_x = self.pos[0] + self.dimensions[0]//2
+        c_y = self.pos[1] + self.dimensions[1]//2
 
         w = self.dimensions[0]
         h = self.dimensions[1]
+
         radius = min(w//2,h//2)
 
         # draw body
         if (self.isPoweredUp):
-            pygame.draw.circle(surface, (255,0,0), (x, y), radius)
+            pygame.draw.circle(surface, (255,0,0), (c_x, c_y), radius)
         else:
-            pygame.draw.circle(surface, self.color, (x, y), radius)
+            pygame.draw.circle(surface, self.color, (c_x, c_y), radius)
 
         # mouth left
         if (self.dir == (-1, 0)): 
             pygame.draw.polygon(surface, (0,0,0), [
-                (self.pos[0], self.pos[1]),
-                (self.pos[0], self.pos[1] + self.dimensions[1]),
-                (x,y)
+                (x, y),
+                (x, y + h),
+                (c_x, c_y)
             ])
 
         # mouth down
         elif (self.dir == (0, 1)):
             pygame.draw.polygon(surface, (0,0,0), [
-                (self.pos[0], self.pos[1] + self.dimensions[1]),
-                (self.pos[0] + self.dimensions[0], self.pos[1] + self.dimensions[1]),
-                (x,y)
+                (x, y + h),
+                (x + w, y + h),
+                (c_x, c_y)
             ])
 
         # mouth up
         elif (self.dir == (0, -1)):
             pygame.draw.polygon(surface, (0,0,0), [
-                (self.pos[0], self.pos[1]),
-                (self.pos[0] + self.dimensions[0], self.pos[1]),
-                (x,y)
+                (x, y),
+                (x + w, y),
+                (c_x,c_y)
             ])
 
         # mouth right as default
         else: 
             pygame.draw.polygon(surface, (0,0,0), [
-                (self.pos[0] + self.dimensions[0], self.pos[1]),
-                (self.pos[0] + self.dimensions[0], self.pos[1] + self.dimensions[1]),
-                (x,y)
+                (x + w, y),
+                (x + w, y + h),
+                (c_x, c_y)
             ])
 
-        print(self.score)
-
-        
     def move(self, board):
         self.ticker -= 1
 
@@ -88,19 +89,30 @@ class Pucman():
             if keys[pygame.K_DOWN]:
                 self.dir = 0, 1
 
-        newPos = self.pos[0] + self.dir[0] * self.dimensions[0], self.pos[1] + self.dir[1] * self.dimensions[1]
+        x = self.pos[0]
+        y = self.pos[1]
+        deltaX = self.dir[0] * self.dimensions[0]
+        deltaY = self.dir[1] * self.dimensions[1]
+        newPos = (x + deltaX, y + deltaY)
 
+        # move if possible
         if (board.canMove(newPos)): 
             self.pos = newPos
 
+            # interpret result of the move
             actionValue = board.pucmanEat(self.pos)
             if (actionValue == SCORE_VALUES['SUPERFOOD']):
                 self.isPoweredUp = True
-                self.ticker = TICK_RATE[self.MODE] * POWER_UP_LENGTH
+                self.ticker = TICK_RATE[self.mode] * POWER_UP_LENGTH
 
+            # update current score
             self.score = self.score + actionValue
-        else: 
+        elif (self.mode == 'DEV'): 
             print('cant move!')
 
+        # update power up
         if (self.ticker == 0):
             self.isPoweredUp = False
+        
+        if (self.mode == 'DEV'):
+            print(self.score)
