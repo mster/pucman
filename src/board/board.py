@@ -1,11 +1,15 @@
+# import board elements
 from src.board.wall import Wall
+from src.board.food import Food
+from src.config import BOARD_ELEMENT_MAP
 
+# import core modules and community packages
 import random
 import pygame
 
 class Board():
     def __init__(self, size, tileSize=(20,20), color=(0,0,0)):
-        # print('Board.__init__()')
+        # init a new display called '_' with given dimensions
         self._ = pygame.display.set_mode(size)
         self._.fill(color)
 
@@ -21,31 +25,34 @@ class Board():
         self.xTileCount = 0
         self.yTileCount = 0
 
+        # score and fitness
         self.score = 0
 
-        self.gridify()
+        # init board
+        self.mapify()
 
     def draw(self):
         self._.fill(self.color)
 
         for x in range(self.xTileCount):
             for y in range(self.yTileCount):
-                # food vs wall
-                if (self.tileMap[x][y] == 1):
+                curr = self.tileMap[x][y]
+
+                # add food
+                if (curr == BOARD_ELEMENT_MAP['FOOD']):
                     coords = int(x * self.tileSize[0] + self.tileSize[0] / 2), int(y * self.tileSize[1] + self.tileSize[1] / 2)
-                    pygame.draw.circle(self._, (222, 161, 133), coords, 3)
-                elif (self.tileMap[x][y] == 2):
+                    # pygame.draw.circle(self._, (222, 161, 133), coords, 3)
+                    Food(coords).draw(self._)
+                
+                # add wall
+                elif (curr == BOARD_ELEMENT_MAP['WALL']):
                     coords = int(x * self.tileSize[0]), int(y * self.tileSize[1])
                     Wall(coords).draw(self._)
-
-    def generate(self):
-        pass
     
 
-    def gridify(self):
+    def mapify(self):
         self.xTileCount = self.size[0] // self.tileSize[0]
         self.yTileCount = self.size[1] // self.tileSize[1]
-        print(self.xTileCount, self.yTileCount)
 
         if (self.size[0] % self.tileSize[0] != 0):
             self.xOffset = self.size[0] % self.tileSize[0]
@@ -57,11 +64,11 @@ class Board():
 
         # add boarders to tileMap
         for x in range(self.xTileCount): 
-            self.tileMap[x][0] = 2
-            self.tileMap[x][self.yTileCount-1] = 2
+            self.tileMap[x][0] = BOARD_ELEMENT_MAP['WALL']
+            self.tileMap[x][self.yTileCount-1] = BOARD_ELEMENT_MAP['WALL']
         for y in range(self.yTileCount): 
-            self.tileMap[0][y] = 2
-            self.tileMap[self.xOffset-1][y] = 2
+            self.tileMap[0][y] = BOARD_ELEMENT_MAP['WALL']
+            self.tileMap[self.xOffset-1][y] = BOARD_ELEMENT_MAP['WALL']
 
         # this is temporary
         # adds a starting zone for ghosts
@@ -92,14 +99,27 @@ class Board():
         self.tileMap[17][8] = 2
 
     def canMove(self, pos):
+        x, y = self.getTile(pos)
+
+        if (self.tileMap[x][y] == 2): return False
+        else: return True
+
+    def pucmanEat(self, pos):
+        x, y = self.getTile(pos)
+
+        # check if pucman actually ate the food
+        addScore = False
+        if (self.tileMap[x][y] == 1): addScore = True
+
+        # this removes the food from the board
+        self.tileMap[x][y] = 0
+
+        return addScore
+
+
+    def getTile(self, pos):
         x = pos[0] // self.tileSize[0]
         y = pos[1] // self.tileSize[1]
 
-        if (self.tileMap[x][y] == 2):
-            return False
-        else:
-            return True
-
-    def pucmanEat(self):
-        pass
+        return x, y
     

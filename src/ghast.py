@@ -1,10 +1,12 @@
 from src.board.history import History
 
+# import core modules and community packages
 import pygame
 import random, time
 
 class Ghast():
     def __init__(self, start, color=None, name=None):
+        # get a good seed
         random.seed(int(time.time() + random.random()))
 
         # bind params
@@ -16,6 +18,7 @@ class Ghast():
         self.color = color or (int(random.random() * 255), int(random.random() * 255), int(random.random() * 255))
         self.stepSize = 20, 20
 
+        # for current hunting algo
         self.history = History(30)
         
 
@@ -26,7 +29,10 @@ class Ghast():
         w = self.dimensions[0]
         h = self.dimensions[1]
 
+        # ghast body
         pygame.draw.circle(surface, self.color, (x + 10, y + 10), 10)
+
+        # ghast eyes
         pygame.draw.circle(surface, (255,255,255), (x + 4, y + 7), 5)
         pygame.draw.circle(surface, (255,255,255), (x + 14, y + 7), 5)
 
@@ -55,14 +61,20 @@ class Ghast():
             favorUp = self.pos[1] > pos[1]
 
             if (random.random() > 0.5):
-                if moveMap[0] and favorLeft: self.pos = LEFT()
-                elif moveMap[1]: self.pos = RIGHT()
+                if moveMap[0] and favorLeft: 
+                    self.pos = LEFT()
+                elif moveMap[1]: 
+                    self.pos = RIGHT()
                 else:
-                    if moveMap[2] and favorUp: self.pos = UP()
-                    elif moveMap[3]: self.pos = DOWN()
+                    if moveMap[2] and favorUp: 
+                        self.pos = UP()
+                    elif moveMap[3]: 
+                        self.pos = DOWN()
             else:
-                if moveMap[2] and favorUp: self.pos = UP()
-                elif moveMap[3]: self.pos = DOWN()
+                if moveMap[2] and favorUp: 
+                    self.pos = UP()
+                elif moveMap[3]: 
+                    self.pos = DOWN()
                 else:
                     if moveMap[0] and favorLeft: self.pos = LEFT()
                     elif moveMap[1]: self.pos = RIGHT()
@@ -88,14 +100,17 @@ class Ghast():
                 self.pos = DOWN()
             else:
                 WANDER()
+
+        # coinflip hunt vs wander
         WANDER() if random.random() > 0.5 else HUNT()
 
+        # enqueue position to history
         self.history.eq(self.pos)
 
         
     def atPucman(self, pos):
-        if self.pos == pos:
+        if self.pos == pos: 
             return True
-        else:
+        else: 
             return False
         

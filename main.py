@@ -36,10 +36,9 @@ def main ():
 
     # while playing
     while session:
-        # manage game time
-        # 50ms delay per tick, 5 ticks per second
-        pygame.time.delay(50)
+        # manage game time, 5 ticks per second
         clock.tick(5)
+        pygame.time.delay(50)
 
         # update player state
         pucman.move(board)

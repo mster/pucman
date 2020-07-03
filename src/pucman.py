@@ -1,9 +1,8 @@
+# import core modules and community packages
 import pygame
 
 class Pucman():
     def __init__(self, start, color=(255,255,0)):
-        # print('I\'m PUCMAN!')
-
         # bind params
         self.pos = start
 
@@ -11,6 +10,7 @@ class Pucman():
         self.dimensions = 20,20
         self.color = color
         self.dir = 0,0
+        self.score = 0
 
     def draw(self, surface):
         x = self.pos[0] + self.dimensions[0]//2
@@ -54,6 +54,8 @@ class Pucman():
                 (x,y)
             ])
 
+        print(self.score)
+
         
     def move(self, board):
         # check for QUIT
@@ -80,7 +82,13 @@ class Pucman():
 
         newPos = self.pos[0] + self.dir[0] * self.dimensions[0], self.pos[1] + self.dir[1] * self.dimensions[1]
 
-        if (board.canMove(newPos)): self.pos = newPos
-        else: print('cant move!')
+        if (board.canMove(newPos)): 
+            self.pos = newPos
+
+            didScore = board.pucmanEat(self.pos)
+            if didScore: 
+                self.score = self.score + 1
+        else: 
+            print('cant move!')
 
     

@@ -1,3 +1,4 @@
+# import core modules and community packages
 import pygame
 
 class Wall():

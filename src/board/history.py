@@ -1,3 +1,5 @@
+# this will be temporary and removed with A* 
+
 class History():
     def __init__(self, maxLen):
         # bind

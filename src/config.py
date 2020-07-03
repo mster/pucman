@@ -10,5 +10,12 @@ COLOR = {
     'BLINKY': (255, 0, 0),
     'PINKY': (255, 184, 255),
     'INKY': (0, 255, 255),
-    'CLYDE': (255, 184, 82)
+    'CLYDE': (255, 184, 82),
+    'FOOD': (222, 161, 133)
+}
+
+BOARD_ELEMENT_MAP = {
+    'NONE': 0,
+    'FOOD': 1,
+    'WALL': 2
 }
