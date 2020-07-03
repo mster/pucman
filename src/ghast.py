@@ -16,12 +16,10 @@ class Ghast():
         self.color = color or (int(random.random() * 255), int(random.random() * 255), int(random.random() * 255))
         self.stepSize = 20, 20
 
-        self.history = History(20)
+        self.history = History(30)
         
 
     def draw(self, surface):
-        # print('Pucman.draw()')
-
         x = self.pos[0]
         y = self.pos[1]
 
@@ -43,7 +41,7 @@ class Ghast():
         def DOWN():
             return (self.pos[0], self.pos[1] + self.stepSize[1])
 
-        # travel modes
+        # use pathfinder to move toward Pucman
         def HUNT():
             moveMap = [
             board.canMove(LEFT()) and LEFT() not in self.history._,
@@ -69,20 +67,29 @@ class Ghast():
                     if moveMap[0] and favorLeft: self.pos = LEFT()
                     elif moveMap[1]: self.pos = RIGHT()
 
+        # wander randomly
         def WANDER():
+            moveMap = [
+                board.canMove(LEFT()),
+                board.canMove(RIGHT()),
+                board.canMove(UP()),
+                board.canMove(DOWN())
+            ]
+
             roll = int(random.random() * 4)
 
-            if (roll == 0):
+            if (roll == 0 and moveMap[0]):
                 self.pos = LEFT()
-            elif (roll == 1):
+            elif (roll == 1  and moveMap[1]):
                 self.pos = RIGHT()
-            elif (roll == 2):
+            elif (roll == 2  and moveMap[2]):
                 self.pos = UP()
-            else:
+            elif (roll == 3 and moveMap[3]):
                 self.pos = DOWN()
+            else:
+                WANDER()
+        WANDER() if random.random() > 0.5 else HUNT()
 
-        #WANDER() if random.random() > 0.5 else HUNT()
-        HUNT()
         self.history.eq(self.pos)
 
         

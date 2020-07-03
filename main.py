@@ -1,56 +1,71 @@
 # pac-ai
 
+# import core modules and community packages
 import sys, math, random
 import pygame
 
+# import configuration settings
+from src.config import *
+
+# import game elements
 from src.pucman import Pucman
 from src.ghast import Ghast
 from src.board.board import Board
 
+
 def main ():
-    # init game and props
+    # initialize all imported pygame modules
     pygame.init()
 
-    board = Board(size=(620,620))
-    pucman = Pucman(start=(20,20))
+    # initialize game elements
+    board = Board(size=BOARD_SIZE)
+    pucman = Pucman(start=START['PUCMAN'], color=COLOR['PUCMAN'])
     ghasts = {
-        "blinky": Ghast(start=(300,300), color=(255, 0, 0), name="Blinky"),
-        "pinky": Ghast(start=(300,300), color=(255, 184, 255), name="Pinky"),
-        "inky": Ghast(start=(300,300), color=(0, 255, 255), name="Inky"),
-        "clyde": Ghast(start=(300,300), color=(255, 184, 82), name="Clyde")
+        "blinky": Ghast(start=START['GHAST'], color=COLOR['BLINKY'], name="Blinky"),
+        "pinky": Ghast(start=START['GHAST'], color=COLOR['PINKY'], name="Pinky"),
+        "inky": Ghast(start=START['GHAST'], color=COLOR['INKY'], name="Inky"),
+        "clyde": Ghast(start=START['GHAST'], color=COLOR['CLYDE'], name="Clyde")
     }
 
+    # configure game clock
     clock = pygame.time.Clock()
-    board.draw()
 
+    # draw background & begin session
+    board.draw()
     session = True
 
     # while playing
     while session:
-        # game time management
+        # manage game time
+        # 50ms delay per tick, 5 ticks per second
         pygame.time.delay(50)
         clock.tick(5)
 
-        # updating game state
+        # update player state
         pucman.move(board)
 
+        # begin drawing back to front
         board.draw()
         pucman.draw(board._)
 
-        # AI ghosts
+        # AI ghasts
         for ghast in ghasts:
             sprite = ghasts[ghast]
 
             sprite.move(pucman.pos, board)
             session = not sprite.atPucman(pucman.pos)
             if not session:
+                # losing condition: 1 or more ghasts touched Pucman
                 print("You died to " + sprite.name)
                 break
+
+            # end AI behavior by drawing ghast
             sprite.draw(board._)
 
         # update board
         pygame.display.update()
 
+    # DEV: auto-restart game after a loss
     main()
 
 if __name__ == "__main__":

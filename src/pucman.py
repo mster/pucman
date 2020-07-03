@@ -13,8 +13,6 @@ class Pucman():
         self.dir = 0,0
 
     def draw(self, surface):
-        # print('Pucman.draw()')
-
         x = self.pos[0] + self.dimensions[0]//2
         y = self.pos[1] + self.dimensions[1]//2
 
