@@ -104,9 +104,3 @@ class Pucman():
 
         if (self.ticker == 0):
             self.isPoweredUp = False
-
-class Ticker():
-    def __init__(self, until):
-        self.tick = until
-
-    
