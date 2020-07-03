@@ -81,16 +81,12 @@ class Pucman():
         for key in keys:
             if keys[pygame.K_LEFT]:
                 self.dir = -1, 0
-                #return
             if keys[pygame.K_RIGHT]:
                 self.dir = 1, 0
-                #return
             if keys[pygame.K_UP]:
                 self.dir = 0, -1
-                #return
             if keys[pygame.K_DOWN]:
                 self.dir = 0, 1
-                #return
 
         newPos = self.pos[0] + self.dir[0] * self.dimensions[0], self.pos[1] + self.dir[1] * self.dimensions[1]
 
