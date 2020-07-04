@@ -1,3 +1,4 @@
+from src.config import TICK_RATE, POWER_UP_LENGTH
 from src.board.history import History
 
 # import core modules and community packages
@@ -19,6 +20,10 @@ class Ghast():
         # props
         self.radius = min(size) // 2
         self.color = color or (int(random.random() * 255), int(random.random() * 255), int(random.random() * 255))
+
+        # power down management
+        self.isPoweredDown = False
+        self.ticker = 0
         
         # for current hunting algo
         self.history = History(30)

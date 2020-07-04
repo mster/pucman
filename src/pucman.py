@@ -15,9 +15,10 @@ class Pucman():
         self.color = color
         self.dir = 0,0
         self.score = 0
+
+        # power up management
         self.isPoweredUp = False
         self.ticker = 0
-
 
     def draw(self, surface):
         x = self.pos[0]

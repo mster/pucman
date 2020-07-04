@@ -109,19 +109,17 @@ class Board():
         landingPos = self.getPos(landingTile)
         landingValue = self.tileMap[landingTile[0]][landingTile[1]]
 
+        # pucman can't jump over walls
         if (landingValue == BOARD_ELEMENT_MAP['WALL']):
             return False
         else:
             return landingPos
 
-        # check if landing is valid
-   
-
     def pucmanEat(self, pos):
         x, y = self.getTile(pos)
         curr = self.tileMap[x][y]
 
-        # check if pucman actually ate the food
+        # check if pucman ate food
         score = 0
         if (curr == BOARD_ELEMENT_MAP['FOOD']): 
             score = 10
@@ -129,7 +127,6 @@ class Board():
             score = 50
 
         self.tileMap[x][y] = BOARD_ELEMENT_MAP['NONE']
-
         return score
 
     def getTile(self, pos):
