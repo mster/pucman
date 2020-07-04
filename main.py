@@ -6,6 +6,7 @@ import pygame
 
 # import configuration settings
 from src.config import *
+from src.board.levels import LEVEL_1
 
 # import game elements
 from src.pucman import Pucman
@@ -15,17 +16,47 @@ from src.board.board import Board
 MODE = 'PLAYING'
 
 def main ():
+    print('main')
     # initialize all imported pygame modules
     pygame.init()
 
     # initialize game elements
-    board = Board(size=BOARD_SIZE, color=COLOR['BACKGROUND'])
-    pucman = Pucman(start=START['PUCMAN'], color=COLOR['PUCMAN'], MODE=MODE)
+    board = Board(
+        size=BOARD_SIZE, 
+        color=COLOR['BACKGROUND'], 
+        level=LEVEL_1
+    )
+    pucman = Pucman(
+        start=board.findUniquePos(BOARD_ELEMENT_MAP['PUCMAN_START']), 
+        size=board.tileSize, 
+        color=COLOR['PUCMAN'], 
+        MODE=MODE
+    )
     ghasts = {
-        "blinky": Ghast(start=START['GHAST'], color=COLOR['BLINKY'], name="Blinky"),
-        "pinky": Ghast(start=START['GHAST'], color=COLOR['PINKY'], name="Pinky"),
-        "inky": Ghast(start=START['GHAST'], color=COLOR['INKY'], name="Inky"),
-        "clyde": Ghast(start=START['GHAST'], color=COLOR['CLYDE'], name="Clyde")
+        "blinky": Ghast(
+            name="Blinky",
+            start=board.findUniquePos(BOARD_ELEMENT_MAP['GHAST_SPAWN']), 
+            size=board.tileSize, 
+            color=COLOR['BLINKY']
+        ),
+        "pinky": Ghast(
+            name="Pinky",
+            start=board.findUniquePos(BOARD_ELEMENT_MAP['GHAST_SPAWN']), 
+            size=board.tileSize, 
+            color=COLOR['PINKY']
+        ),
+        "inky": Ghast(
+            name="Inky",
+            start=board.findUniquePos(BOARD_ELEMENT_MAP['GHAST_SPAWN']), 
+            size=board.tileSize, 
+            color=COLOR['INKY']
+        ),
+        "clyde": Ghast(
+            name="Clyde",
+            start=board.findUniquePos(BOARD_ELEMENT_MAP['GHAST_SPAWN']), 
+            size=board.tileSize, 
+            color=COLOR['CLYDE'] 
+        )
     }
 
     # configure game clock
@@ -64,9 +95,6 @@ def main ():
 
         # update board
         pygame.display.update()
-
-    # DEV: auto-restart game after a loss
-    main()
 
 if __name__ == "__main__":
     main()

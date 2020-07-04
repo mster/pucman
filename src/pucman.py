@@ -4,13 +4,14 @@ from src.config import SCORE_VALUES, POWER_UP_LENGTH, TICK_RATE
 import pygame
 
 class Pucman():
-    def __init__(self, start, color=(255,255,0), MODE="PLAYING"):
+    def __init__(self, start, size, color=(255,255,0), MODE="PLAYING"):
         # bind params
+        self.start = start
         self.pos = start
         self.mode = MODE
 
         # props
-        self.dimensions = 20,20
+        self.dimensions = size
         self.color = color
         self.dir = 0,0
         self.score = 0
@@ -95,9 +96,15 @@ class Pucman():
         deltaY = self.dir[1] * self.dimensions[1]
         newPos = (x + deltaX, y + deltaY)
 
+        canMove = board.canMove(newPos)
+        canJump = board.canJump(newPos)
+
         # move if possible
-        if (board.canMove(newPos)): 
-            self.pos = newPos
+        if (canMove or canJump):
+            if (not canMove):
+                self.pos = canJump
+            else: 
+                self.pos = newPos
 
             # interpret result of the move
             actionValue = board.pucmanEat(self.pos)
@@ -116,3 +123,6 @@ class Pucman():
         
         if (self.mode == 'DEV'):
             print(self.score)
+
+    def reset (self):
+        pass

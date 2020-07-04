@@ -5,19 +5,21 @@ import pygame
 import random, time
 
 class Ghast():
-    def __init__(self, start, color=None, name=None):
+    def __init__(self, start, size, color=None, name=None):
         # get a good seed
         random.seed(int(time.time() + random.random()))
 
         # bind params
+        self.start = start
         self.pos = start
         self.name = name
+        self.dimensions = size
+        self.stepSize = size
 
         # props
-        self.dimensions = 20,20
+        self.radius = min(size) // 2
         self.color = color or (int(random.random() * 255), int(random.random() * 255), int(random.random() * 255))
-        self.stepSize = 20, 20
-
+        
         # for current hunting algo
         self.history = History(30)
         
@@ -30,7 +32,7 @@ class Ghast():
         h = self.dimensions[1]
 
         # ghast body
-        pygame.draw.circle(surface, self.color, (x + 10, y + 10), 10)
+        pygame.draw.circle(surface, self.color, (x + self.radius, y + self.radius), int(self.radius * 0.9))
 
         # ghast eyes
         pygame.draw.circle(surface, (255,255,255), (x + 4, y + 7), 5)

@@ -1,9 +1,4 @@
-BOARD_SIZE = 620, 620 # pixels
-
-START = {
-    'PUCMAN': (20, 20),
-    'GHAST': (300, 300)
-}
+BOARD_SIZE = 300, 300 # pixels
 
 COLOR = {
     'BACKGROUND': (0, 0, 0),
@@ -19,7 +14,9 @@ BOARD_ELEMENT_MAP = {
     'NONE': 0,
     'FOOD': 1,
     'WALL': 2,
-    'SUPERFOOD': 3
+    'SUPERFOOD': 3,
+    'GHAST_SPAWN': 8,
+    'PUCMAN_START': 9
 }
 
 TICK_RATE = {

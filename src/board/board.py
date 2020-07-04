@@ -9,7 +9,7 @@ import random
 import pygame
 
 class Board():
-    def __init__(self, size, tileSize=(20,20), color=(0,0,0)):
+    def __init__(self, size, level=None, color=(0,0,0)):
         # init a new display called '_' with given dimensions
         self._ = pygame.display.set_mode(size)
         self._.fill(color)
@@ -17,10 +17,10 @@ class Board():
         # bind
         self.size = size
         self.color = color
-        self.tileSize = tileSize
+        self.tileMap = level
 
         # board state
-        self.tileMap = None
+        self.tileSize = None
         self.xOffset = 0
         self.yOffset = 0
         self.xTileCount = 0
@@ -43,96 +43,106 @@ class Board():
                 if (curr == BOARD_ELEMENT_MAP['FOOD']):
                     coords = int(x * self.tileSize[0] + self.tileSize[0] / 2), int(y * self.tileSize[1] + self.tileSize[1] / 2)
                     # pygame.draw.circle(self._, (222, 161, 133), coords, 3)
-                    Food(coords).draw(self._)
+                    Food(coords, self.tileSize).draw(self._)
                 
                 # add wall
                 elif (curr == BOARD_ELEMENT_MAP['WALL']):
                     coords = int(x * self.tileSize[0]), int(y * self.tileSize[1])
-                    Wall(coords).draw(self._)
+                    Wall(coords, self.tileSize).draw(self._)
 
                 # add super food
                 elif (curr == BOARD_ELEMENT_MAP['SUPERFOOD']):
                     coords = int(x * self.tileSize[0] + self.tileSize[0] / 2), int(y * self.tileSize[1] + self.tileSize[1] / 2)
-                    SuperFood(coords).draw(self._)
-
-    
+                    SuperFood(coords, self.tileSize).draw(self._)
 
     def mapify(self):
+        self.tileSize = self.size[0] // len(self.tileMap), self.size[1] // len(self.tileMap[0])
         self.xTileCount = self.size[0] // self.tileSize[0]
         self.yTileCount = self.size[1] // self.tileSize[1]
 
-        if (self.size[0] % self.tileSize[0] != 0):
-            self.xOffset = self.size[0] % self.tileSize[0]
-        if (self.size[1] % self.tileSize[1] != 0):
-            self.yOffset = self.size[1] % self.tileSize[1]
-        
-        # init tileMap with all 1
-        self.tileMap = [([1 for y in range(self.yTileCount)]) for x in range(self.xTileCount)]
-
-        # add boarders to tileMap
-        for x in range(self.xTileCount): 
-            self.tileMap[x][0] = BOARD_ELEMENT_MAP['WALL']
-            self.tileMap[x][self.yTileCount-1] = BOARD_ELEMENT_MAP['WALL']
-        for y in range(self.yTileCount): 
-            self.tileMap[0][y] = BOARD_ELEMENT_MAP['WALL']
-            self.tileMap[self.xOffset-1][y] = BOARD_ELEMENT_MAP['WALL']
-
-        # this is temporary
-        # adds a starting zone for ghosts
-        self.tileMap[12][10] = 2
-        self.tileMap[12][11] = 2
-        self.tileMap[12][12] = 2
-        self.tileMap[12][9] = 2
-        self.tileMap[12][8] = 2
-        self.tileMap[12][13] = 2
-        self.tileMap[12][14] = 2
-        self.tileMap[12][15] = 2
-        self.tileMap[12][16] = 2
-
-        self.tileMap[18][10] = 2
-        self.tileMap[18][11] = 2
-        self.tileMap[18][12] = 2
-        self.tileMap[18][9] = 2
-        self.tileMap[18][8] = 2
-        self.tileMap[18][13] = 2
-        self.tileMap[18][14] = 2
-        self.tileMap[18][15] = 2
-        self.tileMap[18][16] = 2
-
-        self.tileMap[13][8] = 2
-        self.tileMap[14][8] = 2
-        self.tileMap[15][8] = 2
-        self.tileMap[16][8] = 2
-        self.tileMap[17][8] = 2
-
-        self.tileMap[5][5] = 3
+    def findUniquePos(self, key):
+        x = y = None
+        for i in range(len(self.tileMap)):      
+            for j in range(len(self.tileMap[0])):
+                if self.tileMap[i][j] == key:
+                    x = i * self.tileSize[0]
+                    y = j * self.tileSize[1]
+        return (x, y)
 
     def canMove(self, pos):
         x, y = self.getTile(pos)
 
-        if (self.tileMap[x][y] == 2): return False
-        else: return True
+        # check for out of index
+        if (x < 0 or x >= self.xTileCount or y < 0 or y >= self.yTileCount):
+            return False
+
+        # normal behavior
+        curr = self.tileMap[x][y]
+        if (curr == BOARD_ELEMENT_MAP['WALL']):
+            return False
+        else: 
+            return True
+
+        print('move', pos)
+
+    def canJump(self, pos):
+        # check if our move counts as a jump
+        x, y = self.getTile(pos)
+        landingTile = (x, y)
+
+        # x-jump OVER
+        if (x >= self.xTileCount):
+            landingTile = 0, landingTile[1]
+
+        # y-jump OVER
+        elif (y >= self.yTileCount):
+            landingTile = landingTile[0], 0
+        
+        # x-jump UNDER
+        elif (x < 0):
+            landingTile = self.xTileCount - 1, landingTile[1]
+
+        # y-jump UNDER
+        elif (y < 0):
+            landingTile = landingTile[0], self.yTileCount - 1
+
+        landingPos = self.getPos(landingTile)
+        landingValue = self.tileMap[landingTile[0]][landingTile[1]]
+
+        if (landingValue == BOARD_ELEMENT_MAP['WALL']):
+            return False
+        else:
+            return landingPos
+
+        # check if landing is valid
+   
 
     def pucmanEat(self, pos):
         x, y = self.getTile(pos)
+        curr = self.tileMap[x][y]
 
         # check if pucman actually ate the food
         score = 0
-        curr = self.tileMap[x][y]
         if (curr == BOARD_ELEMENT_MAP['FOOD']): 
             score = 10
         if (curr == BOARD_ELEMENT_MAP['SUPERFOOD']):
             score = 50
 
-        # this removes the food from the board
-        self.tileMap[x][y] = 0
+        self.tileMap[x][y] = BOARD_ELEMENT_MAP['NONE']
 
         return score
 
-
     def getTile(self, pos):
+        # get tile from position
         x = pos[0] // self.tileSize[0]
         y = pos[1] // self.tileSize[1]
+
+        return x, y
+
+    def getPos(self, tile):
+        # get position from tile
+        x = tile[0] * self.tileSize[0]
+        y = tile[1] * self.tileSize[1]
 
         return x, y
     
