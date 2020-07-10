@@ -86,7 +86,7 @@ class Session():
 
             # begin drawing back to front
             self.board.draw()
-            self.pucman.draw(self.board._)
+            self.pucman.draw(self.board)
             for ghast in self.ghasts:
                 self.ghasts[ghast].draw(self.board._)
                 

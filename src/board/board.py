@@ -26,6 +26,10 @@ class Board():
         self.xTileCount = 0
         self.yTileCount = 0
 
+        # pucman props
+        self.isPoweredUp = False
+        self.powerUpTicker = 0
+
         # score and fitness
         self.score = 0
 

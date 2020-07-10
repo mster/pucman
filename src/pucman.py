@@ -20,7 +20,9 @@ class Pucman():
         self.isPoweredUp = False
         self.ticker = 0
 
-    def draw(self, surface):
+    def draw(self, board):
+        surface = board._
+
         x = self.pos[0]
         y = self.pos[1]
 
@@ -33,7 +35,7 @@ class Pucman():
         radius = min(w//2,h//2)
 
         # draw body
-        if (self.isPoweredUp):
+        if (board.isPoweredUp):
             pygame.draw.circle(surface, (255,0,0), (c_x, c_y), radius)
         else:
             pygame.draw.circle(surface, self.color, (c_x, c_y), radius)
@@ -71,7 +73,7 @@ class Pucman():
             ])
 
     def move(self, board):
-        self.ticker -= 1
+        board.powerUpTicker -= 1
 
         # check for QUIT
         for event in pygame.event.get():
@@ -109,9 +111,10 @@ class Pucman():
 
             # interpret result of the move
             actionValue = board.pucmanEat(self.pos)
+
             if (actionValue == SCORE_VALUES['SUPERFOOD']):
-                self.isPoweredUp = True
-                self.ticker = TICK_RATE[self.mode] * POWER_UP_LENGTH
+                board.isPoweredUp = True
+                board.powerUpTicker = TICK_RATE[self.mode] * POWER_UP_LENGTH
 
             # update current score
             self.score = self.score + actionValue
@@ -119,8 +122,8 @@ class Pucman():
             print('cant move!')
 
         # update power up
-        if (self.ticker == 0):
-            self.isPoweredUp = False
+        if (board.powerUpTicker == 0):
+            board.isPoweredUp = False
         
         if (self.mode == 'DEV'):
             print(self.score)
